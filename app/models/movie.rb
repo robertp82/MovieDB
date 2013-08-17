@@ -8,10 +8,6 @@ class Movie < ActiveRecord::Base
       update_by_name
     end
   end
-  
-  def watch_link_text(watchable)  
-    watchable.watched? ? 'Un-watch' : 'Watch'  
-  end   
     
   def update_by_name
     if self.name.nil?
