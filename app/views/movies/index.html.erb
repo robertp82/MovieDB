@@ -1,0 +1,114 @@
+<h1><%= @title %> Movies</h1>
+
+<div id ="index_filters">
+<%= link_to 'Unwatched', unwatched_movies_path %> | 
+<%= link_to 'Tagged & Unwatched', tagged_movies_path %> |
+<%= link_to 'Wanted', wanted_movies_path %> |
+<%= link_to 'Rob\'s Faves', rob_movies_path %> |
+<%= link_to 'Marina\'s Faves', marina_movies_path %> |
+<%= link_to 'Watched', watched_movies_path %> |
+<%= link_to 'Recently Watched', recent_watched_movies_path %> |
+<%= link_to 'All', all_movies_path %> |  
+          <% if signed_in? %>
+          <%= link_to 'New Movie', new_movie_path %> |
+           <%= link_to "Sign out", destroy_user_session_path, :method => :delete %>   (<%= current_user.email %>)
+          <% else %>
+            <%= link_to "Sign in", new_user_session_path %>
+          <% end %>  
+</div>
+<br />
+
+<div id="container">
+  <table cellpadding="0" cellspacing="0" border="0" class="display" id="movie-table">
+  <thead>
+  <tr>   
+    <th></th>
+    <th>Name</th>
+    <th>Length</th>    
+    <th>Rating</th>
+    <th>Year</th>
+    <th>Description</th>
+    <% if signed_in? and (current_user.id == 1 or current_user.id == 2) %>    
+      <% if @show_watched %>
+      <th>Seen</th>
+      <% end %>
+      <% if @show_tagged %>
+      <th>Tagged</th>
+      <% end %>
+      <% if @show_wanted %>
+      <th>Wanted</th>
+      <% end %>
+      <% if signed_in? and current_user.id == 1 and @show_rob %>        
+        <th>Rob</th>
+      <% end %>
+      <% if signed_in? and current_user.id == 2 and @show_marina %>    
+        <th>Marina</th>    
+      <% end %>
+    <% end %>
+    <!--<th></th>
+    <th></th>
+    <th></th>-->
+  </tr>
+  </thead>
+<% @movies.each do |movie| %>
+  <tr>
+    <td>
+      <% if !movie.poster_path.nil? %>
+     <!-- <a href="http://www.themoviedb.org/movie/<%= movie.tmdb_id %>" target="_blank">-->
+      <img class="magnify" data-magnifyby="6" src="http://d3gtl9l2a4fn1j.cloudfront.net/t/p/w185<%= movie.poster_path %>" width="61" height="88"  />
+      <!--</a>-->
+      <% else %>
+       
+      <% end %>
+    </td>
+    <td><!--<a href="http://www.imdb.com/title/<%= movie.imdb_id %>" target="_blank">-->
+    <%= link_to movie.name, movie,:action => 'show', :id => @movie, :target => "_blank" %><!--</a>-->
+        <p>
+          <a href="http://www.themoviedb.org/movie/<%= movie.tmdb_id %>" target="_blank"><%= image_tag("tmdb.png", :width => 16, :height => 16) %></a>
+          <a href="http://www.imdb.com/title/<%= movie.imdb_id %>" target="_blank"><%= image_tag("imdb.png") %></a>
+          <% if movie.trailer %>
+          <a href="http://www.youtube.com/watch?v=<%= movie.trailer %>" target="_blank"><%= image_tag("youtube.png") %></a>
+          <% end %>
+        </p>   
+    </td>
+    <td><%if movie.runtime %> <b><%= "%03d" % movie.runtime %></b> <% end %> </td>
+    <td><b><%= movie.rating %></b></td>
+    <td><%= movie.year %></td>
+    <td><%= movie.description %></td>
+    <% if signed_in? and (current_user.id == 1 or current_user.id == 2) %>        
+      <% if @show_watched %>
+      <td>
+      <% if signed_in? and current_user.id == 1 %>
+      <%= link_to bool_link_text(movie.watched), toggle_watch_movie_path(movie), :remote => true, :id => "watch_link_#{movie.id}" %>
+      <% else %>
+        <%=  bool_link_text(movie.watched) %>
+      <% end %>
+      </td>
+      <% end %>
+      <% if @show_tagged %>      
+      <td>
+      <% if signed_in? and (current_user.id == 1 or current_user.id == 2) %>    
+        <%= link_to bool_link_text(movie.tagged), toggle_tag_movie_path(movie), :remote => true, :id => "tag_link_#{movie.id}" %>
+      <% end %>
+      </td>    
+      <% end %>
+      <% if signed_in? and @show_wanted and (current_user.id == 1 or current_user.id == 2) %>          
+      <td>
+        <%= link_to bool_link_text(movie.wanted), toggle_want_movie_path(movie), :remote => true, :id => "want_link_#{movie.id}" %>
+      </td>          
+      <% end %>
+      <% if signed_in? and current_user.id == 1 and @show_rob %>        
+        <td>
+          <%= link_to bool_link_text(movie.rob_favorite), toggle_rob_movie_path(movie), :remote => true, :id => "rob_link_#{movie.id}" %>
+        </td>
+      <% end %>      
+      <% if signed_in? and current_user.id == 2 and @show_marina %>      
+        <td>
+          <%= link_to bool_link_text(movie.marina_favorite), toggle_marina_movie_path(movie), :remote => true, :id => "marina_link_#{movie.id}" %>
+        <% end %>
+        </td>       
+    <% end %>
+  </tr>
+<% end %>
+</table>
+</div>

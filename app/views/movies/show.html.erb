@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+      <% if !@movie.poster_path.nil? %>
+      <img src="http://d3gtl9l2a4fn1j.cloudfront.net/t/p/w185<%= @movie.poster_path %>" />
+      <% else %>
+      <% end %>
+</p
+
+<a href="http://www.themoviedb.org/movie/<%= @movie.tmdb_id %>" target="_blank"><%= image_tag("tmdb.png", :width => 16, :height => 16) %></a>
+<a href="http://www.imdb.com/title/<%= @movie.imdb_id %>" target="_blank"><%= image_tag("imdb.png") %></a>
+<% if @movie.trailer %>
+<a href="http://www.youtube.com/watch?v=<%= @movie.trailer %>" target="_blank"><%= image_tag("youtube.png") %></a>
+<% end %>
+
+<p>
+  <b>Name:</b>
+  <%= @movie.name %>
+</p>
+
+<p>
+  <b>Tmdb:</b>
+  <%= @movie.tmdb_id %>
+</p>
+
+<p>
+  <b>Runtime:</b>
+  <%= @movie.runtime %>
+</p>
+
+
+<p>
+  <b>Rating:</b>
+  <%= @movie.rating %>
+</p>
+
+<p>
+  <b>Year:</b>
+  <%= @movie.year %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @movie.description %>
+</p>
+
+<%= link_to 'New', new_movie_path %> |
+<!-- <%= link_to 'Edit', edit_movie_path(@movie) %> | -->
+<%= link_to 'Back', movies_path %>
