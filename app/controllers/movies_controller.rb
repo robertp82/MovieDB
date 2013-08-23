@@ -138,12 +138,15 @@ class MoviesController < ApplicationController
   
   def toggle_watch
     @movie = Movie.find(params[:id])
-    if !@movie.watched
+    @movie = @movie.toggle(:watched)
+    
+    if @movie.watched
       @movie.watched_at = Time.now
     else
       @movie.watched_at = nil
     end    
-    @movie.toggle!(:watched)
+    
+    @movie.save
     respond_to do |f|
       f.js
     end
@@ -151,7 +154,7 @@ class MoviesController < ApplicationController
   
   def toggle_tag
     @movie = Movie.find(params[:id])
-    @movie.toggle!(:tagged)  
+    @movie.toggle!(:tagged)      
     respond_to do |f|
       f.js
     end
@@ -159,10 +162,13 @@ class MoviesController < ApplicationController
   
  def toggle_want
     @movie = Movie.find(params[:id])
-    if @movie.wanted
+    @movie = @movie.toggle(:wanted)
+    
+    if !@movie.wanted
       @movie.tagged = true
-    end
-    @movie.toggle!(:wanted)  
+    end 
+    
+    @movie.save
     respond_to do |f|
       f.js
     end
