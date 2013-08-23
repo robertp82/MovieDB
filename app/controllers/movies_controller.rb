@@ -159,6 +159,9 @@ class MoviesController < ApplicationController
   
  def toggle_want
     @movie = Movie.find(params[:id])
+    if @movie.wanted
+      @movie.tagged = true
+    end
     @movie.toggle!(:wanted)  
     respond_to do |f|
       f.js
