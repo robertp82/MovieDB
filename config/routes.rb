@@ -12,6 +12,7 @@ Movies::Application.routes.draw do
     get 'watched', :on => :collection
     get 'wanted', :on => :collection
     get 'recent_watched', :on => :collection
+    get 'recent_added', :on => :collection    
     get 'rob', :on => :collection
     get 'marina', :on => :collection    
   end

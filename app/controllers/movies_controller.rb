@@ -53,7 +53,13 @@ class MoviesController < ApplicationController
     @title = "Recently Watched"
     @movies = Movie.where(:watched => true, :watched_at =>  (Time.now.midnight - 30.day..Time.now + 1.day)) 
     render_index @movies 
-  end     
+  end
+  
+  def recent_added
+    @title = "Recently Added"
+    @movies = Movie.where(:watched => false, :wanted => false, :created_at =>  (Time.now.midnight - 30.day..Time.now + 1.day)) 
+    render_index @movies 
+  end   
   
   def wanted
     @title = "Wanted"
