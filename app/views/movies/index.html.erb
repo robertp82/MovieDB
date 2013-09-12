@@ -65,11 +65,14 @@
     <td><!--<a href="http://www.imdb.com/title/<%= movie.imdb_id %>" target="_blank">-->
     <%= link_to movie.name, movie,:action => 'show', :id => @movie, :target => "_blank" %><!--</a>-->
         <p>
-          <a href="http://www.themoviedb.org/movie/<%= movie.tmdb_id %>" target="_blank"><%= image_tag("tmdb.png", :width => 16, :height => 16) %></a>
+          <a href="<%= movie.wikipedia %>" target="_blank"><%= image_tag("wikipedia.png") %></a>
           <a href="http://www.imdb.com/title/<%= movie.imdb_id %>" target="_blank"><%= image_tag("imdb.png") %></a>
-          <% if movie.trailer %>
-          <a href="http://www.youtube.com/watch?v=<%= movie.trailer %>" target="_blank"><%= image_tag("youtube.png") %></a>
-          <% end %>
+          <p>
+            <a href="http://www.themoviedb.org/movie/<%= movie.tmdb_id %>" target="_blank"><%= image_tag("tmdb.png", :width => 16, :height => 16) %></a>          
+            <% if movie.trailer %>
+              <a href="http://www.youtube.com/watch?v=<%= movie.trailer %>" target="_blank"><%= image_tag("youtube.png") %></a>
+            <% end %>
+          </p>
         </p>   
     </td>
     <td><%if movie.runtime %> <b><%= "%03d" % movie.runtime %></b> <% end %> </td>

@@ -1,6 +1,10 @@
 class Movie < ActiveRecord::Base
   attr_accessible :description, :name, :rating, :tmdb_id, :year, :imdb_db, :poster_path, :watched, :wanted, :tagged, :runtime, :trailer, :genre
   
+  def wikipedia
+    "http://en.wikipedia.org/w/index.php?search=" + self.name.gsub(" ", "+")
+  end
+  
   def update_tmdb
     if !self.tmdb_id.nil?
       update_by_tmdb_id    
