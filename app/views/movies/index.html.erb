@@ -24,6 +24,7 @@
   <thead>
   <tr>   
     <th></th>
+    <th style="display:none;"></th>
     <th>Name</th>
     <th>Length</th>    
     <th>Rating</th>
@@ -62,6 +63,7 @@
        
       <% end %>
     </td>
+    <td style="display:none;"><%= movie.name %></td>
     <td><!--<a href="http://www.imdb.com/title/<%= movie.imdb_id %>" target="_blank">-->
     <%= link_to movie.name, movie,:action => 'show', :id => @movie, :target => "_blank" %><!--</a>-->
         <p>

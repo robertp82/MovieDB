@@ -12,6 +12,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
+    <script src="http://datatables.net/release-datatables/extras/TableTools/media/js/TableTools.min.js"></script>
     <%= javascript_include_tag "jquery.magnifier.js" %> 
     <%= csrf_meta_tags %>
        
@@ -21,7 +22,12 @@
         $('#movie-table').dataTable( {
         "iDisplayLength": 25,
         "aaSorting": [/*[7, "desc" ], */[ 1, "asc" ]],
-        "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+        "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        "sDom": 'T<"clear">lfrtip',
+        "oTableTools": {
+            "sSwfPath": "<%= asset_path('copy_csv_xls.swf') %>",
+            "aButtons":    [ "copy", "csv", "xls", "print" ]
+            },
         } );
       });
     </script>

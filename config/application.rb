@@ -19,9 +19,10 @@ module Movies
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
-
-    #You need to get a TMDB api key and put that here
-    Tmdb.api_key = "PUT TMDB API KEY here"
+    
+    Tmdb.api_key = "INSERT HERE"
     Tmdb.default_language = "en"    
+    
+    config.assets.paths << Rails.root.join('app', 'assets', 'flash')
   end
 end
