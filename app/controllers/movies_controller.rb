@@ -69,7 +69,11 @@ class MoviesController < ApplicationController
   
   def id_list
     @title = "Selected"
-    movie_ids = params[:ids]    
+    if (params.has_key?(:id))
+      movie_ids = params[:id].split(",").map { |s| s.to_i }     
+    else
+      movie_ids = params[:ids]
+    end
     @movies = Movie.find_all_by_id(movie_ids)
     render_index @movies 
   end

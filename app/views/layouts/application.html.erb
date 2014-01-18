@@ -74,14 +74,14 @@
 
         var anSelected = fnGetSelected( oTable );
         console.log(anSelected);
-        var id_parameters = "";
+        var id_parameters = "id=";
         for (var i = 0; i < anSelected.length; i++) 
         {
           var movie_id = anSelected[i].id;
-          id_parameters += "ids[]=" + movie_id;
+          id_parameters += movie_id;
           if (i != anSelected.length - 1) 
           {
-            id_parameters += "&";
+            id_parameters += ",";
           }
         }
         
