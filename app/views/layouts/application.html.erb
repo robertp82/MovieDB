@@ -100,10 +100,11 @@
         event.preventDefault();
         
         var id_parameters = getSelectedIds();       
-        var my_url = "./set_collection?" + id_parameters;    
+        var my_url = "./set_user_queue?" + id_parameters;    
         
         $.ajax({ url: my_url });
-        window.open('./user_picks', '_self');
+        alert('Movies saved to queue.');
+        window.open('./user_queue', '_self');
     }
     
         

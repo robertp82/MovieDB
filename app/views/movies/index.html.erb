@@ -3,11 +3,11 @@
 <div id ="index_filters">
           <% if signed_in? %>
             <% if current_user.id == 1 %>
-               <%= link_to 'Marina Queue', :controller => 'movies', :action => 'user_picks', :user_id => 2 %> |                                  
+               <%= link_to 'Marina Queue', :controller => 'movies', :action => 'user_queue', :user_id => 2 %> |                                  
             <% elsif current_user.id == 2 %>
-               <%= link_to 'Rob Queue', :controller => 'movies', :action => 'user_picks', :user_id => 1 %> |               
+               <%= link_to 'Rob Queue', :controller => 'movies', :action => 'user_queue', :user_id => 1 %> |               
             <% end %>            
-              <%= link_to 'My Queue', :controller => 'movies', :action => 'user_picks', :user_id => current_user.id %> |               
+              <%= link_to 'My Queue', :controller => 'movies', :action => 'user_queue', :user_id => current_user.id %> |               
           <% end %>     
           
 <%= link_to 'Unwatched', unwatched_movies_path %> | 
@@ -114,12 +114,12 @@
       <% end %>
       <% if signed_in? and current_user.id == 1 and @show_rob %>        
         <td>
-          <%= link_to bool_link_text(movie.rob_favorite), toggle_rob_movie_path(movie), :remote => true, :id => "rob_link_#{movie.id}" %>
+          <%= link_to bool_link_text(movie.is_rob_favorite), toggle_rob_movie_path(movie), :remote => true, :id => "rob_link_#{movie.id}" %>
         </td>
       <% end %>      
       <% if signed_in? and current_user.id == 2 and @show_marina %>      
         <td>
-          <%= link_to bool_link_text(movie.marina_favorite), toggle_marina_movie_path(movie), :remote => true, :id => "marina_link_#{movie.id}" %>
+          <%= link_to bool_link_text(movie.is_marina_favorite), toggle_marina_movie_path(movie), :remote => true, :id => "marina_link_#{movie.id}" %>
         <% end %>
         </td>       
     <% end %>

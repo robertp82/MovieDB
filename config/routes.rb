@@ -6,7 +6,6 @@ Movies::Application.routes.draw do
     get 'toggle_tag', :on => :member
     get 'toggle_rob', :on => :member
     get 'toggle_marina', :on => :member
-    get 'set_collection', :on => :collection
     get 'all', :on => :collection
     get 'tagged', :on => :collection
     get 'unwatched', :on => :collection    
@@ -17,7 +16,8 @@ Movies::Application.routes.draw do
     get 'rob', :on => :collection
     get 'marina', :on => :collection
     get 'id_list', :on => :collection
-    get 'user_picks', :on => :collection    
+    get 'user_queue', :on => :collection
+    get 'set_user_queue', :on => :collection    
   end
   
   root to: 'movies#index'

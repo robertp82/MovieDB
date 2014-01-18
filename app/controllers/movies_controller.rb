@@ -69,13 +69,15 @@ class MoviesController < ApplicationController
   
   def rob
     @title = "Rob's Favorite"
-    @movies = Movie.where(:rob_favorite => true)    
+    #@movies = Movie.where(:rob_favorite => true)    
+    @movies = get_collection({ :user_id => 1 }, 1)
     render_index @movies, false, true, false, true, false 
   end        
 
   def marina
     @title = "Marina's Favorite"
-    @movies = Movie.where(:marina_favorite => true)    
+    #@movies = Movie.where(:marina_favorite => true)  
+    @movies = get_collection({ :user_id => 2 }, 1)    
     render_index @movies, false, false, true, true, false 
   end  
   
@@ -90,47 +92,83 @@ class MoviesController < ApplicationController
     render_index @movies 
   end    
   
-  def set_collection
+  def set_user_queue  
+    set_collection 2  
+  end  
+  
+  def user_queue
+    @title = "User Picks"    
+    show_collection params, 2
+  end  
+  
+  def set_collection movie_queue_type_id
     if !signed_in?
       return
     end
     user_id = current_user.id  
     movie_ids = params[:id].split(",").map { |s| s.to_i }
     user = current_user
-    movies = Movie.find_all_by_id(movie_ids)
+    movies = Movie.find_all_by_id(movie_ids)    
     
-    if (user.movie_collections.length == 0)
+    movie_queues = get_movie_collections(user, movie_queue_type_id)
+    
+    if (movie_queues.nil?)
       mc = MovieCollection.new
       mc.user_id = user_id
       mc.name = "Default"
+      mc.collection_type_id = movie_queue_type_id
       user.movie_collections.push(mc)    
+      movie_queues = get_movie_collections(user, movie_queue_type_id)
     else    
-      user.movie_collections[0].movies.clear
+      movie_queues[0].movies.clear
     end
        
-    user.movie_collections[0].movies.push(movies)    
-  end  
+    movie_queues[0].movies.push(movies)    
   
-  def user_picks
-    @title = "User Picks"
+  end
+  
+  def get_collection params, movie_queue_type_id    
     found_picks = false
+    movies = nil
     if (params.has_key?(:user_id))
-      user_id = params[:user_id] 
+      user_id = params[:user_id]
       user = User.find(user_id)
     else
       user = current_user
-    end                
+    end
+
+    if (user.nil?)
+      redirect_to action: 'index'
+    end
     
-    if (!user.nil? && user.movie_collections.length >= 1)                 
-      @movies = user.movie_collections[0].movies
-      found_picks = true      
-      render_index @movies
+    movie_queues = get_movie_collections(user, movie_queue_type_id)
+    
+    if (movie_queues.length >= 1)                 
+      movies = movie_queues[0].movies
     end       
     
-    if !found_picks
-      redirect_to action: 'index'    
+    movies
+  end
+  
+  def show_collection params, movie_queue_type_id
+  
+    @movies = get_collection params, movie_queue_type_id
+    
+    if (!@movies.nil?)                   
+      render_index @movies
+    else
+      redirect_to action: 'index'
+    end  
+  end
+    
+  def get_movie_collections user, collection_type_id
+    if (user.nil?)
+      return nil
     end
-  end     
+    
+    movie_queues = user.movie_collections.where(:collection_type_id => collection_type_id)
+    movie_queues  
+  end
   
 
   # GET /movies/1
@@ -235,20 +273,32 @@ class MoviesController < ApplicationController
   end    
   
   def toggle_rob
-    @movie = Movie.find(params[:id])
-    @movie.toggle!(:rob_favorite)  
-    respond_to do |f|
-      f.js
-    end
-  end  
-
+    user = User.find(1)
+    toggle_favorite user
+  end 
+  
   def toggle_marina
+    user = User.find(2)
+    toggle_favorite user
+  end    
+  
+  def toggle_favorite user
     @movie = Movie.find(params[:id])
-    @movie.toggle!(:marina_favorite)  
+    movie_id = params[:id]
+    
+    movie_collections = get_movie_collections(user, 1)
+    favorite_movies = movie_collections[0].movies
+    movie_exists = favorite_movies.where(:id => movie_id).length == 1
+    if (movie_exists)
+      favorite_movies.delete(@movie)
+    else
+      favorite_movies.push(@movie)    
+    end
+         
     respond_to do |f|
       f.js
     end
-  end    
+  end
 
   # DELETE /movies/1
   # DELETE /movies/1.json
