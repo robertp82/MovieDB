@@ -67,17 +67,6 @@ class MoviesController < ApplicationController
     render_index @movies, true, false, false, false, false 
   end
   
-  def id_list
-    @title = "Selected"
-    if (params.has_key?(:id))
-      movie_ids = params[:id].split(",").map { |s| s.to_i }     
-    else
-      movie_ids = params[:ids]
-    end
-    @movies = Movie.find_all_by_id(movie_ids)
-    render_index @movies 
-  end
-
   def rob
     @title = "Rob's Favorite"
     @movies = Movie.where(:rob_favorite => true)    
@@ -88,7 +77,61 @@ class MoviesController < ApplicationController
     @title = "Marina's Favorite"
     @movies = Movie.where(:marina_favorite => true)    
     render_index @movies, false, false, true, true, false 
+  end  
+  
+  def id_list
+    @title = "Selected"
+    if (params.has_key?(:id))
+      movie_ids = params[:id].split(",").map { |s| s.to_i }     
+    else
+      movie_ids = params[:ids]
+    end
+    @movies = Movie.find_all_by_id(movie_ids)
+    render_index @movies 
+  end    
+  
+  def set_collection
+    if !signed_in?
+      return
+    end
+    user_id = current_user.id  
+    movie_ids = params[:id].split(",").map { |s| s.to_i }
+    user = current_user
+    movies = Movie.find_all_by_id(movie_ids)
+    
+    if (user.movie_collections.length == 0)
+      mc = MovieCollection.new
+      mc.user_id = user_id
+      mc.name = "Default"
+      user.movie_collections.push(mc)    
+    else    
+      user.movie_collections[0].movies.clear
+    end
+       
+    user.movie_collections[0].movies.push(movies)    
+  end  
+  
+  def user_picks
+    @title = "User Picks"
+    found_picks = false
+    if (params.has_key?(:user_id))
+      user_id = params[:user_id] 
+      user = User.find(user_id)
+    else
+      user = current_user
+    end                
+    
+    if (!user.nil? && user.movie_collections.length >= 1)                 
+      @movies = user.movie_collections[0].movies
+      found_picks = true      
+      render_index @movies
+    end       
+    
+    if !found_picks
+      redirect_to action: 'index'    
+    end
   end     
+  
 
   # GET /movies/1
   # GET /movies/1.json

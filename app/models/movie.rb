@@ -1,5 +1,6 @@
 class Movie < ActiveRecord::Base
-  attr_accessible :description, :name, :rating, :tmdb_id, :year, :imdb_db, :poster_path, :watched, :wanted, :tagged, :runtime, :trailer, :genre
+  has_and_belongs_to_many :movie_collections
+  attr_accessible :description, :name, :rating, :tmdb_id, :year, :imdb_db, :poster_path, :watched, :wanted, :tagged, :runtime, :trailer, :genre  
   
   def wikipedia
     "http://en.wikipedia.org/w/index.php?search=" + self.name.gsub(" ", "+")

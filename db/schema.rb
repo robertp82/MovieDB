@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130816000000) do
+ActiveRecord::Schema.define(version: 20140118043023) do
+
+  create_table "movie_collections", force: true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "movie_collections_movies", id: false, force: true do |t|
+    t.integer "movie_collection_id"
+    t.integer "movie_id"
+  end
+
+  add_index "movie_collections_movies", ["movie_collection_id", "movie_id"], name: "movie_coll_index", using: :btree
+  add_index "movie_collections_movies", ["movie_collection_id"], name: "movie_coll_index_by_id", using: :btree
 
   create_table "movies", force: true do |t|
     t.string   "name"

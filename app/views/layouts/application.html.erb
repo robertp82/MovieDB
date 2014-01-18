@@ -33,7 +33,8 @@
                         {"sExtends": "copy", "bSelectedOnly": true},
                         {"sExtends": "csv", "bSelectedOnly": true},
                         {"sExtends": "xls", "bSelectedOnly": true},
-                        {"sExtends": "text", "sButtonText": "Filter", "fnClick": function (nButton, oConfig, oFlasdh) { getFilter(); }}
+                        {"sExtends": "text", "sButtonText": "Filter", "fnClick": function (nButton, oConfig, oFlasdh) { getFilter(); }},
+                        {"sExtends": "text", "sButtonText": "Save Picks", "fnClick": function (nButton, oConfig, oFlasdh) { setCollection(); }}                        
                     ]
             
             },
@@ -69,9 +70,7 @@
         return aReturn;
     }
     
-    function getFilter() {
-        event.preventDefault();
-
+    function getSelectedIds() {
         var anSelected = fnGetSelected( oTable );
         console.log(anSelected);
         var id_parameters = "id=";
@@ -84,11 +83,29 @@
             id_parameters += ",";
           }
         }
+      return id_parameters;
+    }
+    
+    function getFilter() {
+        event.preventDefault();
+        
+        var id_parameters = getSelectedIds();
         
         var url = "./id_list?" + id_parameters;
         console.log(url);
         window.open(url, '_blank');    
-    }              
+    }
+    
+    function setCollection() {
+        event.preventDefault();
+        
+        var id_parameters = getSelectedIds();       
+        var my_url = "./set_collection?" + id_parameters;    
+        
+        $.ajax({ url: my_url });
+        window.open('./user_picks', '_self');
+    }
+    
         
       });
     </script>
