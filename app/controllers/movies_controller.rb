@@ -66,6 +66,13 @@ class MoviesController < ApplicationController
     @movies = Movie.where(:wanted => true)    
     render_index @movies, true, false, false, false, false 
   end
+  
+  def id_list
+    @title = "Selected"
+    movie_ids = params[:ids]    
+    @movies = Movie.find_all_by_id(movie_ids)
+    render_index @movies 
+  end
 
   def rob
     @title = "Rob's Favorite"

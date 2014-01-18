@@ -19,7 +19,7 @@
     <script>
       jQuery(document).ready(function ($) {
       //$(document).ready(function(){
-        $('#movie-table').dataTable( {
+        var oTable = $('#movie-table').dataTable( {
         "iDisplayLength": 50,
         "aaSorting": [/*[7, "desc" ], */[ 1, "asc" ]],
         "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
@@ -32,11 +32,64 @@
                         "select_all", "select_none",
                         {"sExtends": "copy", "bSelectedOnly": true},
                         {"sExtends": "csv", "bSelectedOnly": true},
-                        {"sExtends": "xls", "bSelectedOnly": true}
+                        {"sExtends": "xls", "bSelectedOnly": true},
+                        {"sExtends": "text", "sButtonText": "Filter", "fnClick": function (nButton, oConfig, oFlasdh) { getFilter(); }}
                     ]
             
             },
         } );
+
+    var aSelected = [];
+    $(this).click(function () {
+        var id = this.id;
+        var index = jQuery.inArray(id, aSelected);
+        if ( index === -1 ) {
+            aSelected.push( id );
+        } else {
+            aSelected.splice( index, 1 );
+        }
+        $(this).toggleClass('row_selected');
+    });
+
+    function fnGetSelected( oTableLocal )
+    {
+        var aReturn = new Array();
+        var aTrs = oTableLocal.fnGetNodes();
+        //alert(aTrs);
+        for ( var i=0 ; i<aTrs.length ; i++ )
+        {
+           
+           console.log(aTrs[i]);
+            if ( $(aTrs[i]).hasClass('DTTT_selected') ) 
+            {
+              console.log('works');
+                aReturn.push( aTrs[i] );
+            }
+        }
+        return aReturn;
+    }
+    
+    function getFilter() {
+        event.preventDefault();
+
+        var anSelected = fnGetSelected( oTable );
+        console.log(anSelected);
+        var id_parameters = "";
+        for (var i = 0; i < anSelected.length; i++) 
+        {
+          var movie_id = anSelected[i].id;
+          id_parameters += "ids[]=" + movie_id;
+          if (i != anSelected.length - 1) 
+          {
+            id_parameters += "&";
+          }
+        }
+        
+        var url = "./id_list?" + id_parameters;
+        console.log(url);
+        window.open(url, '_blank');    
+    }              
+        
       });
     </script>
   </head>

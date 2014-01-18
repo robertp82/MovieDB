@@ -53,7 +53,7 @@
   </tr>
   </thead>
 <% @movies.each do |movie| %>
-  <tr>
+  <tr id="<%= movie.id %>">
     <td>
       <% if !movie.poster_path.nil? %>
      <!-- <a href="http://www.themoviedb.org/movie/<%= movie.tmdb_id %>" target="_blank">-->
