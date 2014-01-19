@@ -28,23 +28,19 @@ class MoviesController < ApplicationController
   def unwatched
     @title = "Unwatched"
     #@movies = Movie.where(:watched => false, :wanted => false, :tagged => false)
-    @movies = Movie.where(:watched => false, :wanted => false)
+    @movies = Movie.where(:watched => false)
+    
     render_index @movies, false, false, false
   end  
   
   def all
     @title = "All"
-    @movies = Movie.where(:wanted => false)
+    #@movies = Movie.where(:wanted => false)
+    @movies = Movie.all
     render_index @movies    
   end
   
-  def tagged
-    @title = "Tagged"
-    #@movies = Movie.where(:tagged => true, :watched => false, :wanted => false)       
-    @movies = get_collection({ :user_id => 1 }, 4) #handle for rob/marina independently
-    render_index @movies, false, false, false
-  end
-  
+ 
   def watched
     @title = "Watched"
     @movies = Movie.where(:watched => true)    
@@ -63,10 +59,25 @@ class MoviesController < ApplicationController
     render_index @movies 
   end   
   
+ def tagged
+    @title = "Tagged"
+    #@movies = Movie.where(:tagged => true, :watched => false, :wanted => false)
+    user_id = 1
+    if (!current_user.nil?)
+      user_id = current_user.id
+    end
+    @movies = get_collection({ :user_id => user_id }, 4) #handle for rob/marina independently
+    render_index @movies, false, false, false
+  end  
+  
   def wanted
     @title = "Wanted"
+    user_id = 1
+    if (!current_user.nil?)
+      user_id = current_user.id
+    end
     #@movies = Movie.where(:wanted => true)    
-    @movies = get_collection({ :user_id => 1 }, 5) #handle for rob/marina independently
+    @movies = get_collection({ :user_id => user_id }, 5) #handle for rob/marina independently
     render_index @movies, true, false, false, false, false 
   end
   
@@ -255,8 +266,7 @@ class MoviesController < ApplicationController
   
   
  def toggle_want
-    user = User.find(1)
-    toggle_collection user, 5
+    toggle_collection current_user, 5
     
     #TODO: auto-tag when toggling want?
     #if !@movie.wanted
@@ -265,9 +275,8 @@ class MoviesController < ApplicationController
     
   end
   
-  def toggle_tag
-    user = User.find(1)
-    toggle_collection user, 4
+  def toggle_tag   
+    toggle_collection current_user, 4
   end    
   
   def toggle_rob

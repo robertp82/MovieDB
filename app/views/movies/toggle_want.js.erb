@@ -1,2 +1,2 @@
-$("#want_link_<%= @movie.id %>").text("<%= bool_link_text(@movie.is_rob_wanted) %>");  
+$("#want_link_<%= @movie.id %>").text("<%= bool_link_text(@movie.is_tagged(current_user)) %>");  
 $("#movie_<%= @movie.id %>").effect("highlight"); 

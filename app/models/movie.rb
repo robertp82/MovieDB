@@ -8,14 +8,23 @@ class Movie < ActiveRecord::Base
   end
 
   #todo: handle by user  
-  def is_rob_tagged
-    favorties = MovieCollection.where(:user_id => 1, :collection_type_id => 4)[0].movies
+  def is_tagged user
+    user_id = 1
+    if (!user.nil?)
+      user_id = user.id
+    end
+    
+    favorties = MovieCollection.where(:user_id => user_id, :collection_type_id => 4)[0].movies
     return favorties.where(:id => self.id).length == 1    
   end  
   
   #todo: handle by user
-  def is_rob_wanted
-    favorties = MovieCollection.where(:user_id => 1, :collection_type_id => 5)[0].movies
+  def is_wanted user
+    user_id = 1
+    if (!user.nil?)
+      user_id = user.id
+    end  
+    favorties = MovieCollection.where(:user_id => user_id, :collection_type_id => 5)[0].movies
     return favorties.where(:id => self.id).length == 1    
   end    
   
