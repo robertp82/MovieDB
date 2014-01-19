@@ -103,13 +103,13 @@
       <% if @show_tagged %>      
       <td>
       <% if signed_in? and (current_user.id == 1 or current_user.id == 2) %>    
-        <%= link_to bool_link_text(movie.tagged), toggle_tag_movie_path(movie), :remote => true, :id => "tag_link_#{movie.id}" %>
+        <%= link_to bool_link_text(movie.is_rob_tagged), toggle_tag_movie_path(movie), :remote => true, :id => "tag_link_#{movie.id}" %>
       <% end %>
       </td>    
       <% end %>
       <% if signed_in? and @show_wanted and (current_user.id == 1 or current_user.id == 2) %>          
       <td>
-        <%= link_to bool_link_text(movie.wanted), toggle_want_movie_path(movie), :remote => true, :id => "want_link_#{movie.id}" %>
+        <%= link_to bool_link_text(movie.is_rob_wanted), toggle_want_movie_path(movie), :remote => true, :id => "want_link_#{movie.id}" %>
       </td>          
       <% end %>
       <% if signed_in? and current_user.id == 1 and @show_rob %>        

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140118171030) do
+ActiveRecord::Schema.define(version: 20140119171031) do
 
   create_table "collection_types", force: true do |t|
     t.string   "name"
@@ -46,8 +46,6 @@ ActiveRecord::Schema.define(version: 20140118171030) do
     t.string   "imdb_id"
     t.string   "poster_path"
     t.boolean  "watched"
-    t.boolean  "tagged"
-    t.boolean  "wanted"
     t.integer  "runtime"
     t.string   "trailer"
     t.integer  "genre"

@@ -1,11 +1,23 @@
 class Movie < ActiveRecord::Base
   has_and_belongs_to_many :movie_collections
   has_and_belongs_to_many :users
-  attr_accessible :description, :name, :rating, :tmdb_id, :year, :imdb_db, :poster_path, :watched, :wanted, :tagged, :runtime, :trailer, :genre
+  attr_accessible :description, :name, :rating, :tmdb_id, :year, :imdb_db, :poster_path, :watched, :runtime, :trailer, :genre
   
   def wikipedia
     "http://en.wikipedia.org/w/index.php?search=" + self.name.gsub(" ", "+")
   end
+
+  #todo: handle by user  
+  def is_rob_tagged
+    favorties = MovieCollection.where(:user_id => 1, :collection_type_id => 4)[0].movies
+    return favorties.where(:id => self.id).length == 1    
+  end  
+  
+  #todo: handle by user
+  def is_rob_wanted
+    favorties = MovieCollection.where(:user_id => 1, :collection_type_id => 5)[0].movies
+    return favorties.where(:id => self.id).length == 1    
+  end    
   
   def is_rob_favorite
     favorties = MovieCollection.where(:user_id => 1, :collection_type_id => 1)[0].movies

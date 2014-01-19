@@ -27,7 +27,8 @@ class MoviesController < ApplicationController
   
   def unwatched
     @title = "Unwatched"
-    @movies = Movie.where(:watched => false, :wanted => false, :tagged => false)
+    #@movies = Movie.where(:watched => false, :wanted => false, :tagged => false)
+    @movies = Movie.where(:watched => false, :wanted => false)
     render_index @movies, false, false, false
   end  
   
@@ -39,7 +40,8 @@ class MoviesController < ApplicationController
   
   def tagged
     @title = "Tagged"
-    @movies = Movie.where(:tagged => true, :watched => false, :wanted => false)    
+    #@movies = Movie.where(:tagged => true, :watched => false, :wanted => false)       
+    @movies = get_collection({ :user_id => 1 }, 4) #handle for rob/marina independently
     render_index @movies, false, false, false
   end
   
@@ -63,7 +65,8 @@ class MoviesController < ApplicationController
   
   def wanted
     @title = "Wanted"
-    @movies = Movie.where(:wanted => true)    
+    #@movies = Movie.where(:wanted => true)    
+    @movies = get_collection({ :user_id => 1 }, 5) #handle for rob/marina independently
     render_index @movies, true, false, false, false, false 
   end
   
@@ -97,7 +100,7 @@ class MoviesController < ApplicationController
   end  
   
   def user_queue
-    @title = "User Picks"    
+    @title = "User Picks"
     show_collection params, 2
   end  
   
@@ -250,26 +253,21 @@ class MoviesController < ApplicationController
     end
   end
   
-  def toggle_tag
-    @movie = Movie.find(params[:id])
-    @movie.toggle!(:tagged)      
-    respond_to do |f|
-      f.js
-    end
-  end  
   
  def toggle_want
-    @movie = Movie.find(params[:id])
-    @movie = @movie.toggle(:wanted)
+    user = User.find(1)
+    toggle_collection user, 5
     
-    if !@movie.wanted
-      @movie.tagged = true
-    end 
+    #TODO: auto-tag when toggling want?
+    #if !@movie.wanted
+      #@movie.tagged = true
+    #end        
     
-    @movie.save
-    respond_to do |f|
-      f.js
-    end
+  end
+  
+  def toggle_tag
+    user = User.find(1)
+    toggle_collection user, 4
   end    
   
   def toggle_rob
@@ -280,13 +278,18 @@ class MoviesController < ApplicationController
   def toggle_marina
     user = User.find(2)
     toggle_favorite user
-  end    
-  
+  end  
+
   def toggle_favorite user
+    toggle_collection user, 1
+  
+  end
+  
+  def toggle_collection user, collection_type_id
     @movie = Movie.find(params[:id])
     movie_id = params[:id]
     
-    movie_collections = get_movie_collections(user, 1)
+    movie_collections = get_movie_collections(user, collection_type_id)
     favorite_movies = movie_collections[0].movies
     movie_exists = favorite_movies.where(:id => movie_id).length == 1
     if (movie_exists)
