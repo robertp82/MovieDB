@@ -39,8 +39,7 @@ class MoviesController < ApplicationController
     @movies = Movie.all
     render_index @movies    
   end
-  
- 
+   
   def watched
     @title = "Watched"
     @movies = Movie.where(:watched => true)    
@@ -49,7 +48,18 @@ class MoviesController < ApplicationController
   
   def recent_watched
     @title = "Recently Watched"
-    @movies = Movie.where(:watched => true, :watched_at =>  (Time.now.midnight - 45.day..Time.now + 1.day)) 
+    months_from = 1
+    if (params.has_key?(:months_from))
+      months_from = params[:months_from].to_i
+    end
+    
+    months_to = months_from - 1
+    
+    if (params.has_key?(:months_to))
+      months_to = params[:months_to].to_i
+    end
+    
+    @movies = Movie.where(:watched => true, :watched_at =>  (Time.now.midnight - months_from.month..Time.now.midnight - months_to.month)) 
     render_index @movies 
   end
   
@@ -66,7 +76,7 @@ class MoviesController < ApplicationController
     if (!current_user.nil?)
       user_id = current_user.id
     end
-    @movies = get_collection({ :user_id => user_id }, 4) #handle for rob/marina independently
+    @movies = get_collection({ :user_id => user_id }, 4).where(:watched => false) #handle for rob/marina independently
     render_index @movies, false, false, false
   end  
   
