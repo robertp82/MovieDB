@@ -59,7 +59,7 @@ class MoviesController < ApplicationController
       months_to = params[:months_to].to_i
     end
     
-    @movies = Movie.where(:watched => true, :watched_at =>  (Time.now.midnight - months_from.month..Time.now.midnight - months_to.month)) 
+    @movies = Movie.where(:watched => true, :watched_at =>  (Time.now.midnight - months_from.month..Time.now.midnight - months_to.month + 1.day)) 
     render_index @movies 
   end
   
@@ -276,12 +276,18 @@ class MoviesController < ApplicationController
   
   
  def toggle_want
-    toggle_collection current_user, 5
+    toggle_collection current_user, 5, false
+    
+    @movie = Movie.find(params[:id])
     
     #TODO: auto-tag when toggling want?
-    #if !@movie.wanted
-      #@movie.tagged = true
-    #end        
+    if !@movie.is_wanted current_user
+      toggle_collection current_user, 4, false
+    end
+    
+    respond_to do |f|
+        f.js
+    end    
     
   end
   
@@ -300,11 +306,10 @@ class MoviesController < ApplicationController
   end  
 
   def toggle_favorite user
-    toggle_collection user, 1
-  
+    toggle_collection user, 1  
   end
   
-  def toggle_collection user, collection_type_id
+  def toggle_collection user, collection_type_id, respond_false = false
     @movie = Movie.find(params[:id])
     movie_id = params[:id]
     
@@ -314,11 +319,13 @@ class MoviesController < ApplicationController
     if (movie_exists)
       favorite_movies.delete(@movie)
     else
-      favorite_movies.push(@movie)    
+      favorite_movies.push(@movie)
     end
-         
-    respond_to do |f|
-      f.js
+    
+    if (respond_false.nil?)
+      respond_to do |f|
+        f.js
+      end
     end
   end
 
