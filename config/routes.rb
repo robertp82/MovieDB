@@ -17,7 +17,8 @@ Movies::Application.routes.draw do
     get 'marina', :on => :collection
     get 'id_list', :on => :collection
     get 'user_queue', :on => :collection
-    get 'set_user_queue', :on => :collection    
+    get 'set_user_queue', :on => :collection
+    get 'search', :on => :collection
   end
   
   root to: 'movies#index'

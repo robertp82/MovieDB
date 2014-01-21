@@ -25,6 +25,17 @@ class MoviesController < ApplicationController
     end
   end
   
+  def search
+    @title = "Search Results"
+    if (!params.has_key?(:search))
+      redirect_to action: 'index'
+    end
+    
+    query_string = params[:search]
+    @movies = Movie.where('name like ? or description like ?', "%#{query_string}%", "%#{query_string}%")
+    render_index @movies, false, false, false
+  end
+  
   def unwatched
     @title = "Unwatched"
     #@movies = Movie.where(:watched => false, :wanted => false, :tagged => false)
@@ -76,7 +87,7 @@ class MoviesController < ApplicationController
     if (!current_user.nil?)
       user_id = current_user.id
     end
-    @movies = get_collection({ :user_id => user_id }, 4).where(:watched => false) #handle for rob/marina independently
+    @movies = get_collection({ :user_id => user_id }, 4) #handle for rob/marina independently
     render_index @movies, false, false, false
   end  
   
@@ -292,7 +303,7 @@ class MoviesController < ApplicationController
   end
   
   def toggle_tag   
-    toggle_collection current_user, 4
+    toggle_collection current_user, 4, true
   end    
   
   def toggle_rob
