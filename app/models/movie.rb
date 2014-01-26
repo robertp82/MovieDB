@@ -40,7 +40,7 @@ class Movie < ActiveRecord::Base
   
   def update_tmdb
     if !self.tmdb_id.nil?
-      update_by_tmdb_id    
+      update_by_tmdb_id
     elsif !self.name.nil?
       update_by_name
     end
@@ -82,12 +82,7 @@ class Movie < ActiveRecord::Base
     if self.watched.nil?
       self.watched = false
     end
-    if self.wanted.nil?
-      self.wanted = false
-    end
-    if self.tagged.nil?
-      self.tagged = false
-    end
+    
     #self.watched = false    
   end
   

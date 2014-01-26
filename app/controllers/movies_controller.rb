@@ -145,6 +145,13 @@ class MoviesController < ApplicationController
     user = current_user
     movies = Movie.find_all_by_id(movie_ids)    
     
+    set_collection_impl user, movies, movie_queue_type_id
+    
+    movie_queues = get_movie_collections(user, movie_queue_type_id)
+  end
+  
+  def set_collection_impl user, movies, movie_queue_type_id
+  
     movie_queues = get_movie_collections(user, movie_queue_type_id)
     
     if (movie_queues.nil?)
@@ -158,8 +165,7 @@ class MoviesController < ApplicationController
       movie_queues[0].movies.clear
     end
        
-    movie_queues[0].movies.push(movies)    
-  
+    movie_queues[0].movies.push(movies)
   end
   
   def get_collection params, movie_queue_type_id    
@@ -240,7 +246,9 @@ class MoviesController < ApplicationController
     @movie = Movie.new(params[:movie])
     #@movie = Movie.create(movie_params)
     
-    @movie.update_tmdb       
+    @movie.update_tmdb
+    movies = [@movie]
+    set_collection_impl current_user, movies, 5 #set wanted    
 
     respond_to do |format|
       if !@movie.tmdb_id.nil? and @movie.save
